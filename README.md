@@ -1,104 +1,183 @@
-# TeamBoard – Team Ticket Management Capstone
+# TeamBoard
 
-A learning capstone based on the uploaded Capstone Build module. It demonstrates a React + TypeScript frontend and FastAPI backend with JWT authentication, server-enforced roles, ticket CRUD, ETag responses, a small TTL statistics cache, and WebSocket notifications.
+TeamBoard is a small web app for organizing a team's work as tickets. Sign in, view the ticket board, and—depending on your account—create, update, or delete tickets.
+
+This project is a learning/demo app built with **React and TypeScript** in the browser and **FastAPI and Python** on the server.
 
 ## Project links
-- [Project scope](docs/Project_Scope.md)
-- [API documentation](docs/API_Documentation.md)
-- [Implementation report](docs/Implementation_Report.md)
-- [TeamBoard results (testing report)](docs/Testing_Report.md)
-- [Backend source](backend/app/)
-- [Frontend source](frontend/src/)
 
-## Requirements
-- Python 3.10+
-- React.jsx
-- npm
+- [Project scope](docs/Project_Scope.md) — what the app is meant to do.
+- [API documentation](docs/API_Documentation.md) — how the frontend and backend communicate.
+- [Implementation report](docs/Implementation_Report.md) — how the project was built.
+- [TeamBoard results and test cases](docs/Testing_Report.md) — test cases and space to record test results.
+- [Backend results (interactive API / Swagger)](http://127.0.0.1:8001/docs) — available while the backend is running locally.
+- [Backend source code](backend/app/)
+- [Frontend source code](frontend/src/)
 
-## 1. Run the backend (Windows PowerShell)
+## What you can do
+
+- Sign in as a viewer, member, or admin.
+- View tickets organized into **To do**, **In progress**, and **Done**.
+- Create tickets and update their status if your role allows it.
+- Delete tickets as an admin.
+- See status counts and receive live updates while the app is open.
+
+## What you need
+
+Install these before starting:
+
+- **Python 3.10 or newer**
+- **Node.js 18 or newer** (npm is included with Node.js)
+- **Git**, if you want to clone the project or push it to GitHub
+
+To check that Python and Node.js are installed, open PowerShell and run:
 
 ```powershell
-cd backend
+py --version
+node --version
+npm --version
+```
+
+## Start TeamBoard on Windows
+
+The backend and frontend run in **two separate PowerShell terminals**. Keep both terminals open while using the app.
+
+### 1. Start the backend
+
+Open the first PowerShell terminal and go to the backend folder:
+
+```powershell
+cd "C:\Users\<your-name>\Desktop\TeamBoard_Capstone_Project\backend"
+```
+
+Replace `<your-name>` with your Windows account folder name. If your project is in a different location, use that location instead.
+
+The next commands create a Python virtual environment, install the backend packages, and create your local settings file. Run the environment and install commands the first time you set up the project:
+
+```powershell
 py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-Copy-Item .env.example .env
-$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174/"
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
 ```
 
-API: [http://127.0.0.1:8001](http://127.0.0.1:8001)  
-Swagger docs: [http://127.0.0.1:8001/docs](http://127.0.0.1:8001/docs)
+Create `.env` from the example if it does not already exist:
 
-If PowerShell blocks activation, run:
+```powershell
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+Set the address the backend should allow for TeamBoard's frontend, then start the API:
+
+```powershell
+$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174"
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
+```
+
+Leave this terminal running. The backend is available at [http://127.0.0.1:8001](http://127.0.0.1:8001), and its interactive API page is [http://127.0.0.1:8001/docs](http://127.0.0.1:8001/docs).
+
+### 2. Start the frontend
+
+Open a **second** PowerShell terminal and go to the frontend folder:
+
+```powershell
+cd "C:\Users\<your-name>\Desktop\TeamBoard_Capstone_Project\frontend"
+```
+
+Install frontend packages the first time, then start the development server:
+
+```powershell
+npm install
+npm run dev -- --host 127.0.0.1 --port 5174
+```
+
+Open TeamBoard at [http://127.0.0.1:5174](http://127.0.0.1:5174). Port `5173` may show a different app if another development server is using it. If Vite selects a different port because `5174` is busy, set `FRONTEND_ORIGIN` in the backend terminal to the exact URL Vite prints and restart the backend.
+
+### 3. Sign in
+
+Use one of these demo accounts:
+
+| Role | Username | Password | Permissions |
+|---|---|---|---|
+| Viewer | `viewer` | `viewer123` | View tickets |
+| Member | `member` | `member123` | View, create, and update tickets |
+| Admin | `admin` | `admin123` | View, create, update, and delete tickets |
+
+## If something goes wrong
+
+### PowerShell says script execution is disabled
+
+In the backend terminal, allow scripts for that terminal only, then activate the virtual environment:
+
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\venv\Scripts\Activate.ps1
 ```
 
-## 2. Run the frontend (new terminal)
+### “Address already in use” or “Only one usage of each socket address”
+
+That port is already being used, often by another copy of TeamBoard. Do not start a second backend on port `8001`. Stop the existing server with **Ctrl+C** in its terminal, or keep using the server that is already running.
+
+If Vite reports that port `5173` is busy, it may start the frontend on `5174` instead. Set `FRONTEND_ORIGIN` in the backend terminal to the exact frontend URL Vite printed, for example:
 
 ```powershell
-cd frontend
-npm install
-npm run dev -- --host 127.0.0.1
+$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174"
 ```
 
-Open the URL printed by Vite, normally [http://127.0.0.1:5173](http://127.0.0.1:5173). If port 5173 is occupied, Vite selects another port (such as 5174); set `FRONTEND_ORIGIN` in the backend terminal to that exact URL and restart the backend.
+Then restart the backend so it reads the new setting.
 
-## Demo login accounts
-| Role | Username | Password |
-|---|---|---|
-| Viewer | viewer | viewer123 |
-| Member | member | member123 |
-| Admin | admin | admin123 |
+### The login page says “Failed to fetch”
 
-## API endpoints
-| Method | Path | Minimum role | Purpose |
-|---|---|---|---|
-| POST | /auth/login | Public | Login and receive JWT |
-| GET | /tickets | Viewer | List tickets (ETag) |
-| POST | /tickets | Member | Create ticket |
-| PATCH | /tickets/{id} | Member | Update ticket |
-| DELETE | /tickets/{id} | Admin | Delete ticket |
-| GET | /tickets/stats | Viewer | Status counts (TTL cache) |
-| WS | /ws/tickets | Viewer | Live change notifications |
-| GET | /health | Public | Health check |
+Make sure the backend terminal still shows Uvicorn running on port `8001`. Also check that `FRONTEND_ORIGIN` matches the frontend URL exactly, including the port. Keep both development-server terminals open.
 
-## 3. Run backend tests
+### Tickets disappear after restarting the backend
 
-From the `backend` folder:
+That is expected in this demo: tickets are kept in memory and are cleared when the backend restarts.
+
+## Run the backend tests
+
+In a PowerShell terminal, go to the backend folder and activate its virtual environment if it is not already active:
+
 ```powershell
+cd "C:\Users\<your-name>\Desktop\TeamBoard_Capstone_Project\backend"
+.\venv\Scripts\Activate.ps1
 python -m pytest -q
 ```
 
-## Important learning/demo limitations
-- This starter uses in-memory ticket storage. Tickets reset when the backend restarts.
-- Demo accounts and passwords are hard-coded for local learning only.
-- The frontend stores the demo access token in localStorage for simplicity.
-- The WebSocket is a single-process demo. It sends event notifications; the browser reloads the ticket list through REST.
-- The TTL cache is process-local. Redis, PostgreSQL persistence, Docker, production-grade password hashing, refresh tokens, and deployment are not included in this starter.
-- Change the secret and replace demo authentication/storage before any real deployment.
+The test report lists the test cases; run this command to get the results on your computer.
 
-## Suggested screenshot evidence
-1. VS Code project structure.
-2. Backend running in terminal.
-3. Swagger `/docs`.
-4. Login screen with demo accounts visible.
-5. Member dashboard and ticket creation.
-6. Ticket board showing Todo / In progress / Done.
-7. Viewer account showing read-only access.
-8. Member trying DELETE in Swagger and receiving 403.
-9. Admin deleting a ticket.
-10. Pytest results.
-11. Two browser windows showing a WebSocket-driven update.
+## How the project is organized
 
-## Module mapping
-- Scoping and acceptance criteria: README and endpoint contract.
-- Backend/frontend layout and vertical slice: [backend/app](backend/app/) and [frontend/src](frontend/src/).
-- Authentication integration: [auth.py](backend/app/routers/auth.py) and [security.py](backend/app/security.py).
-- RBAC: `require_role()` on backend routes and role-specific frontend controls.
-- ETag: `GET /tickets`.
-- TTL cache: `GET /tickets/stats`.
-- WebSocket: `/ws/tickets` and frontend socket effect.
-- Testing: [backend/tests/test_api.py](backend/tests/test_api.py).
+```text
+TeamBoard_Capstone_Project/
+├── backend/
+│   ├── app/          Python API and WebSocket code
+│   └── tests/        Backend tests
+├── docs/             Project, API, implementation, and test reports
+├── frontend/
+│   └── src/          React application and styles
+└── README.md         This guide
+```
+
+## API at a glance
+
+The API is served from `http://127.0.0.1:8001`.
+
+| Method | URL path | What it does | Who can use it |
+|---|---|---|---|
+| `POST` | `/auth/login` | Sign in and receive an access token | Anyone with a demo account |
+| `GET` | `/tickets` | List tickets | Signed-in users |
+| `POST` | `/tickets` | Create a ticket | Members and admins |
+| `PATCH` | `/tickets/{id}` | Update a ticket | Members and admins |
+| `DELETE` | `/tickets/{id}` | Delete a ticket | Admins |
+| `GET` | `/tickets/stats` | Get ticket counts | Signed-in users |
+| `WS` | `/ws/tickets` | Receive live ticket updates | Signed-in users |
+| `GET` | `/health` | Check whether the API is running | Anyone |
+
+## Demo limitations
+
+- This is a local learning project, not a production-ready service.
+- Tickets are stored in memory and reset when the backend restarts.
+- Demo usernames and passwords are included for learning purposes only.
+- The frontend stores its demo access token in browser `localStorage`.
+- The WebSocket and statistics cache work in the running backend process only.
+- Do not publish your local `backend/.env` file or use the demo credentials for a real deployment.
