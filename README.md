@@ -70,7 +70,7 @@ if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 Set the address the backend should allow for TeamBoard's frontend, then start the API:
 
 ```powershell
-$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174"
+$env:FRONTEND_ORIGIN = "http://localhost:5174"
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
@@ -91,7 +91,7 @@ npm install
 npm run dev -- --host 127.0.0.1 --port 5174
 ```
 
-Open TeamBoard at [http://127.0.0.1:5174](http://127.0.0.1:5174). Port `5173` may show a different app if another development server is using it. If Vite selects a different port because `5174` is busy, set `FRONTEND_ORIGIN` in the backend terminal to the exact URL Vite prints and restart the backend.
+Open TeamBoard at [http://localhost:5174](http://localhost:5174). Port `5173` may show a different app if another development server is using it. If Vite selects a different port because `5174` is busy, set `FRONTEND_ORIGIN` in the backend terminal to the exact URL Vite prints and restart the backend.
 
 ### 3. Sign in
 
@@ -121,7 +121,7 @@ That port is already being used, often by another copy of TeamBoard. Do not star
 If Vite reports that port `5173` is busy, it may start the frontend on `5174` instead. Set `FRONTEND_ORIGIN` in the backend terminal to the exact frontend URL Vite printed, for example:
 
 ```powershell
-$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174"
+$env:FRONTEND_ORIGIN = "http://localhost:5174"
 ```
 
 Then restart the backend so it reads the new setting.

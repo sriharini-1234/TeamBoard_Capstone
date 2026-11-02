@@ -56,7 +56,7 @@ py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
-$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174"
+$env:FRONTEND_ORIGIN = "http://localhost:5174"
 python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
@@ -78,7 +78,7 @@ npm install
 npm run dev -- --host 127.0.0.1 --port 5174
 ```
 
-Keep this terminal open too. Open `http://127.0.0.1:5174` in a browser. The explicit port avoids opening a different app that may already be using port 5173.
+Keep this terminal open too. Open `http://localhost:5174` in a browser. The explicit port avoids opening a different app that may already be using port 5173.
 
 The backend's `FRONTEND_ORIGIN` value must match the frontend URL exactly. If you choose a different port, stop the backend with Ctrl+C, set the environment variable to that origin, and restart the backend.
 
