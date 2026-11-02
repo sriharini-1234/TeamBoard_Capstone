@@ -2,6 +2,14 @@
 
 A learning capstone based on the uploaded Capstone Build module. It demonstrates a React + TypeScript frontend and FastAPI backend with JWT authentication, server-enforced roles, ticket CRUD, ETag responses, a small TTL statistics cache, and WebSocket notifications.
 
+## Project links
+- [Project scope](docs/Project_Scope.md)
+- [API documentation](docs/API_Documentation.md)
+- [Implementation report](docs/Implementation_Report.md)
+- [Testing report](docs/Testing_Report.md)
+- [Backend source](backend/app/)
+- [Frontend source](frontend/src/)
+
 ## Requirements
 - Python 3.10+
 - Node.js 18+
@@ -15,11 +23,12 @@ py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 Copy-Item .env.example .env
-uvicorn app.main:app --reload
+$env:FRONTEND_ORIGIN = "http://127.0.0.1:5173"
+python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
 ```
 
-API: http://localhost:8000  
-Swagger docs: http://localhost:8000/docs
+API: [http://127.0.0.1:8001](http://127.0.0.1:8001)  
+Swagger docs: [http://127.0.0.1:8001/docs](http://127.0.0.1:8001/docs)
 
 If PowerShell blocks activation, run:
 ```powershell
@@ -32,10 +41,10 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```powershell
 cd frontend
 npm install
-npm run dev
+npm run dev -- --host 127.0.0.1
 ```
 
-Open the URL printed by Vite, normally http://localhost:5173.
+Open the URL printed by Vite, normally [http://127.0.0.1:5173](http://127.0.0.1:5173). If port 5173 is occupied, Vite selects another port (such as 5174); set `FRONTEND_ORIGIN` in the backend terminal to that exact URL and restart the backend.
 
 ## Demo login accounts
 | Role | Username | Password |
@@ -60,7 +69,7 @@ Open the URL printed by Vite, normally http://localhost:5173.
 
 From the `backend` folder:
 ```powershell
-pytest -q
+python -m pytest -q
 ```
 
 ## Important learning/demo limitations
@@ -86,10 +95,10 @@ pytest -q
 
 ## Module mapping
 - Scoping and acceptance criteria: README and endpoint contract.
-- Backend/frontend layout and vertical slice: `backend/app` and `frontend/src`.
-- Authentication integration: `auth.py` and `security.py`.
+- Backend/frontend layout and vertical slice: [backend/app](backend/app/) and [frontend/src](frontend/src/).
+- Authentication integration: [auth.py](backend/app/routers/auth.py) and [security.py](backend/app/security.py).
 - RBAC: `require_role()` on backend routes and role-specific frontend controls.
 - ETag: `GET /tickets`.
 - TTL cache: `GET /tickets/stats`.
 - WebSocket: `/ws/tickets` and frontend socket effect.
-- Testing: `backend/tests/test_api.py`.
+- Testing: [backend/tests/test_api.py](backend/tests/test_api.py).
