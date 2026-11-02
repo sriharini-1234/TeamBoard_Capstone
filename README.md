@@ -10,6 +10,7 @@ This project is a learning/demo app built with **React and TypeScript** in the b
 - [API documentation](docs/API_Documentation.md) — how the frontend and backend communicate.
 - [Implementation report](docs/Implementation_Report.md) — how the project was built.
 - [TeamBoard results and test cases](docs/Testing_Report.md) — test cases and space to record test results.
+- [Mentor submission guide](docs/Mentor_Submission_Guide.md) — setup, demo, testing, and evidence checklist.
 - [Backend results (interactive API / Swagger)](http://127.0.0.1:8001/docs) — available while the backend is running locally.
 - [Backend source code](backend/app/)
 - [Frontend source code](frontend/src/)
