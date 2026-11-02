@@ -6,13 +6,13 @@ A learning capstone based on the uploaded Capstone Build module. It demonstrates
 - [Project scope](docs/Project_Scope.md)
 - [API documentation](docs/API_Documentation.md)
 - [Implementation report](docs/Implementation_Report.md)
-- [Testing report](docs/Testing_Report.md)
+- [TeamBoard results (testing report)](docs/Testing_Report.md)
 - [Backend source](backend/app/)
 - [Frontend source](frontend/src/)
 
 ## Requirements
 - Python 3.10+
-- Node.js 18+
+- React.jsx
 - npm
 
 ## 1. Run the backend (Windows PowerShell)
@@ -23,7 +23,7 @@ py -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 Copy-Item .env.example .env
-$env:FRONTEND_ORIGIN = "http://127.0.0.1:5173"
+$env:FRONTEND_ORIGIN = "http://127.0.0.1:5174/"
 python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8001
 ```
 
